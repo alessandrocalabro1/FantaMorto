@@ -245,6 +245,121 @@ const teams = [
             "Tom Selleck",
             "Demi Lovato"
         ]
+    },
+    {
+        name: "48ers",
+        becchino: "TBD",
+        players: [
+            "Adriano Pappalardo",
+            "Carla Signoris",
+            "Dan Petrescu",
+            "Eva Marie Saint",
+            "Frankie Valli",
+            "Giuliano Ferrara",
+            "Ivan Cottini",
+            "Jackie Stewart",
+            "Johnny Dorelli",
+            "Karim Abdul-Jabbar",
+            "Marisa Laurito",
+            "Norman Foster",
+            "Tori Spelling",
+            "Wladimir Putin",
+            "Mick Jagger",
+            "Giancarlo Magalli",
+            "Benjamin Netanyahu"
+        ]
+    },
+    {
+        name: "Rancor Mortis",
+        becchino: "TBD",
+        players: [
+            "Isabel Perón",
+            "Sigfrido Ranucci",
+            "Bjorn Borg",
+            "Robert De Niro",
+            "Bill Clinton",
+            "Elton John",
+            "Stevie Wonder",
+            "Harrison Ford",
+            "Lola Young",
+            "Michael Douglas",
+            "Massimo D'Alema",
+            "Romano Prodi",
+            "Ethel Caterham",
+            "Giancarlo Giannini",
+            "Massimo Ranieri",
+            "Mario Monti",
+            "Pier Ferdinando Casini"
+        ]
+    },
+    {
+        name: "Maz Against Humanity",
+        becchino: "TBD",
+        players: [
+            "Diosdado Cabello",
+            "Delcy Rodriguez",
+            "Bashar al-Assad",
+            "Abdel Fattah el-Sisi",
+            "Diego Abatantuono",
+            "Malala Yousafzai",
+            "Massimo Bossetti",
+            "Cassiel Wuta-Ofei",
+            "Skepta",
+            "Jair Bolsonaro",
+            "Mr Beast",
+            "Bill Goldberg",
+            "Shawn Michaels",
+            "Togi",
+            "Mischa Barton",
+            "Charles Bronson",
+            "Queen Camilla"
+        ]
+    },
+    {
+        name: "Mors Tua Sordi Mia",
+        becchino: "TBD",
+        players: [
+            "Billy Dee Williams",
+            "Oliver Ford Davies",
+            "Giuliano Amato",
+            "Olindo Romano",
+            "Rosa Bazzi",
+            "Gianfranco Stevanin",
+            "Bruce Dern",
+            "Nick Fuentes",
+            "Paolo Mieli",
+            "Tippi Hedren",
+            "Beatrice dei Paesi Bassi",
+            "Carmen dell'Orefice",
+            "Shirley Jones",
+            "James Hong",
+            "Margherita II di Danimarca",
+            "Juan Carlos I",
+            "Bebe Vio"
+        ]
+    },
+    {
+        name: "Dividi et Impera",
+        becchino: "TBD",
+        players: [
+            "Pete Murray (DJ)",
+            "Mahathir Mohamad",
+            "Shirley MacLaine",
+            "Joan Collins",
+            "Margherita II di Danimarca",
+            "Yoshihiro Togashi",
+            "Phil Collins",
+            "Lamar Odom",
+            "Paul Gascoigne",
+            "Sami Modiano",
+            "Bao Xishun",
+            "Adelmo Eufemi",
+            "Viola Valentino",
+            "Dolph Lundgren",
+            "Chuck Panozzo",
+            "Angelo Acerbi",
+            "Alessandro Baricco"
+        ]
     }
 ];
 
@@ -433,13 +548,17 @@ async function renderCards() {
     const allPlayers = teams.flatMap(t => t.players.map(p => ({ team: t.name, name: p })));
 
     // Shuffle slightly or just run? Run.
-    allPlayers.forEach(async ({ team, name }) => {
+    const fetchPromises = allPlayers.map(async ({ team, name }) => {
         // Individual fetch & update
         const result = await checkStatus(name);
         updateCard(team, name, result);
     });
 
+    // We don't strictly need to await all to finish, as they update individually
+    await Promise.all(fetchPromises);
+
     updateFooter();
+    updateLeaderboard(); // Calculate leaderboard after initial fetch
 }
 
 function updateCard(teamName, originalName, result) {
@@ -449,8 +568,10 @@ function updateCard(teamName, originalName, result) {
 
     if (!card) return;
 
-    // Remove loading class
-    card.className = 'card';
+    // Store status on the card element for easy counting later (or we could use the data model)
+    // Let's rely on the DOM for now or better, update the team model if we want robust data
+    // For simplicity, let's mark the card with a class
+    card.className = 'card' + (result.isDead ? ' is-dead' : '');
 
     let color = 'var(--accent-alive)';
     let glow = 'rgba(0, 255, 136, 0.2)';
@@ -476,12 +597,112 @@ function updateCard(teamName, originalName, result) {
             <a href="${result.link}" target="_blank" style="color: var(--text-secondary); margin-top: 0.5rem; display: block; font-size: 0.75rem;">Verifica Fonte &rarr;</a>
         </div>
     `;
+
+    // Re-calculate leaderboard whenever a card updates to "Dead"
+    if (result.isDead) {
+        updateLeaderboard();
+    }
 }
 
 function updateFooter() {
     const footer = document.querySelector('footer p');
     const now = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     footer.innerHTML = `Ultimo aggiornamento: ${now} - Dati da Wikipedia`;
+}
+
+// --- New Features ---
+
+function switchView(viewName) {
+    // Hide all view sections
+    document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.view-switcher button').forEach(el => el.classList.remove('active'));
+
+    // Show selected
+    if (viewName === 'teams') {
+        document.getElementById('tracker-grid').style.display = 'flex'; // was column flex
+        document.getElementById('btn-teams').classList.add('active');
+        document.querySelector('.search-container').style.display = 'block'; // Show search only in teams view
+    } else if (viewName === 'leaderboard') {
+        document.getElementById('leaderboard-view').style.display = 'block';
+        document.getElementById('btn-leaderboard').classList.add('active');
+        document.querySelector('.search-container').style.display = 'none'; // Hide search in leaderboard
+        updateLeaderboard(); // Ensure fresh data
+    }
+}
+
+function filterTeams(searchTerm) {
+    const term = searchTerm.toLowerCase();
+    const sections = document.querySelectorAll('.team-section');
+
+    sections.forEach(section => {
+        const teamName = section.querySelector('.team-header h2').textContent.toLowerCase();
+        const becchinoName = section.querySelector('.becchino-info').textContent.toLowerCase();
+
+        if (teamName.includes(term) || becchinoName.includes(term)) {
+            section.style.display = 'block';
+        } else {
+            section.style.display = 'none';
+        }
+    });
+}
+
+function updateLeaderboard() {
+    const tbody = document.getElementById('leaderboard-body');
+    tbody.innerHTML = '';
+
+    // Calculate stats
+    // We can iterate over the DOM to see 'is-dead' classes or we could have stored state in the `teams` array
+    // Since `teams` array is our data source, let's look at the DOM state since `checkStatus` results aren't saved back to `teams` object globally yet.
+    // Actually, relying on DOM is a bit fragile. 
+    // Better: let's scan the DOM for now as it's the "Rendered Truth"
+
+    const leaderboardData = [];
+
+    document.querySelectorAll('.team-section').forEach(section => {
+        const teamName = section.querySelector('.team-header h2').textContent;
+        const becchinoText = section.querySelector('.becchino-info').textContent.replace('🧟 Becchino: ', '');
+
+        let deadCount = 0;
+        let totalCount = 0;
+
+        section.querySelectorAll('.card').forEach(card => {
+            totalCount++;
+            // Check if card has styled as dead (we added a specific check in updateCard logic strictly for this? 
+            // Or check the --status-color style? Or simply check text content "DECEDUTO")
+            if (card.querySelector('.status-badge') && card.querySelector('.status-badge').textContent === 'DECEDUTO') {
+                deadCount++;
+            }
+        });
+
+        leaderboardData.push({
+            team: teamName,
+            becchino: becchinoText,
+            dead: deadCount,
+            total: totalCount
+        });
+    });
+
+    // Sort by Dead Count (Desc), then Total (Asc) as tie breaker? Or alphabetical
+    leaderboardData.sort((a, b) => b.dead - a.dead);
+
+    // Render rows
+    leaderboardData.forEach((data, index) => {
+        const row = document.createElement('tr');
+        // Add medal emoji for top 3
+        let pos = index + 1;
+        if (pos === 1) pos = '🥇';
+        else if (pos === 2) pos = '🥈';
+        else if (pos === 3) pos = '🥉';
+
+        row.innerHTML = `
+            <td>${pos}</td>
+            <td><strong>${data.team}</strong></td>
+            <td>${data.becchino}</td>
+            <td class="count-dead">${data.dead}</td>
+            <td>${data.total - data.dead}</td>
+        `;
+        tbody.appendChild(row);
+    });
 }
 
 renderCards();
