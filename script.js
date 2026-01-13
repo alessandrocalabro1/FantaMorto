@@ -311,7 +311,7 @@ const teams = [
             "Shawn Michaels",
             "Togi",
             "Mischa Barton",
-            "Charles Bronson",
+            "Charles Bronson (prisoner)",
             "Queen Camilla"
         ]
     },

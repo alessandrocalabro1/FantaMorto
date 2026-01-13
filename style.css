@@ -352,3 +352,80 @@ header {
 }
 
 /* Hide old controls style rule */
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+
+    .sticky-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+        top: 0.5rem;
+        padding: 0.75rem;
+    }
+
+    .brand {
+        justify-content: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .brand h1 {
+        font-size: 1.25rem;
+    }
+
+    .controls-wrapper {
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
+    }
+
+    .view-switcher {
+        width: 100%;
+        display: flex;
+    }
+
+    .view-switcher button {
+        flex: 1;
+        text-align: center;
+        padding: 0.6rem 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .search-container {
+        width: 100%;
+    }
+
+    .search-container input {
+        width: 100%;
+    }
+
+    .search-container input:focus {
+        width: 100%;
+    }
+
+    /* Adjust grid for mobile */
+    .team-grid {
+        grid-template-columns: 1fr;
+        /* Single column cards */
+        gap: 1rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    .team-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .becchino-info {
+        font-size: 0.85rem;
+        width: 100%;
+        text-align: center;
+    }
+}
