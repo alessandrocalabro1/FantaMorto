@@ -13,19 +13,21 @@
 
 <body>
     <div class="container">
-        <header>
-            <h1>☠️ FantaMorto Monitor</h1>
-            <p>Stato in tempo reale della tua lista.</p>
-        </header>
-
-        <div class="controls-container">
-            <div class="view-switcher">
-                <button id="btn-teams" class="active" onclick="switchView('teams')">📋 Squadre</button>
-                <button id="btn-leaderboard" onclick="switchView('leaderboard')">🏆 Classifica</button>
+        <div class="sticky-header">
+            <div class="brand">
+                <span class="logo-icon">☠️</span>
+                <h1>FantaMorto Monitor</h1>
             </div>
-            <div class="search-container">
-                <input type="text" id="team-search" placeholder="🔍 Cerca squadra o becchino..."
-                    oninput="filterTeams(this.value)">
+
+            <div class="controls-wrapper">
+                <div class="view-switcher">
+                    <button id="btn-teams" class="active" onclick="switchView('teams')">📋 Squadre</button>
+                    <button id="btn-leaderboard" onclick="switchView('leaderboard')">🏆 Classifica</button>
+                </div>
+                <div class="search-container">
+                    <input type="text" id="team-search" placeholder="Cerca squadra o morituro..."
+                        oninput="filterTeams(this.value)">
+                </div>
             </div>
         </div>
 

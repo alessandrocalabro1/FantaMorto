@@ -179,85 +179,142 @@ header p {
     }
 }
 
-/* Controls */
-.controls-container {
+/* Sticky Header */
+.sticky-header {
+    position: sticky;
+    top: 1rem;
+    z-index: 100;
+    margin-bottom: 2rem;
+    background: rgba(13, 13, 13, 0.85);
+    /* Slightly transparent dark */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.03);
+    gap: 1rem;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand h1 {
+    font-size: 1.5rem;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.logo-icon {
+    font-size: 2rem;
+}
+
+.controls-wrapper {
+    display: flex;
+    gap: 1rem;
+    flex-grow: 1;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.view-switcher {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.25rem;
     border-radius: 12px;
-    border: var(--glass-border);
 }
 
 .view-switcher button {
     background: transparent;
-    border: 1px solid var(--text-secondary);
+    border: none;
     color: var(--text-secondary);
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1.25rem;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
-    margin-right: 0.5rem;
-    transition: all 0.2s;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
 }
 
 .view-switcher button:hover {
-    background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
 }
 
 .view-switcher button.active {
-    background: var(--accent-alive);
-    border-color: var(--accent-alive);
+    background: var(--text-primary);
     color: #000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.search-container {
+    position: relative;
 }
 
 .search-container input {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    width: 300px;
-    font-size: 1rem;
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    /* Space for icon */
+    border-radius: 12px;
+    width: 250px;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.search-container::before {
+    content: '🔍';
+    position: absolute;
+    left: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 .search-container input:focus {
     outline: none;
+    background: rgba(255, 255, 255, 0.1);
     border-color: var(--accent-alive);
+    width: 280px;
+    /* Slight expand */
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.1);
 }
 
-/* Leaderboard */
+/* Leaderboard Polishing */
 .leaderboard-container {
-    background: var(--card-bg);
+    background: linear-gradient(145deg, #1a1a1a, #151515);
     border: var(--glass-border);
-    border-radius: 16px;
-    padding: 2rem;
-    overflow-x: auto;
+    border-radius: 20px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
 .leaderboard-table {
     width: 100%;
     border-collapse: collapse;
-    color: var(--text-primary);
-}
-
-.leaderboard-table th,
-.leaderboard-table td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .leaderboard-table th {
-    color: var(--text-secondary);
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1.5rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+}
+
+.leaderboard-table td {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .leaderboard-table tr:last-child td {
@@ -265,11 +322,33 @@ header p {
 }
 
 .leaderboard-table tr:hover {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.03);
 }
 
-.count-dead {
-    color: var(--accent-dead);
-    font-weight: bold;
+.pos-rank {
+    font-weight: 800;
+    color: var(--text-secondary);
+}
+
+.pos-1 {
+    font-size: 1.5rem;
+}
+
+.pos-2 {
+    font-size: 1.3rem;
+}
+
+.pos-3 {
     font-size: 1.2rem;
 }
+
+header {
+    display: none;
+}
+
+/* Hide old header if present structure remains */
+.controls-container {
+    display: none;
+}
+
+/* Hide old controls style rule */

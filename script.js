@@ -619,32 +619,55 @@ function switchView(viewName) {
 
     // Show selected
     if (viewName === 'teams') {
-        document.getElementById('tracker-grid').style.display = 'flex'; // was column flex
+        document.getElementById('tracker-grid').style.display = 'flex';
         document.getElementById('btn-teams').classList.add('active');
-        document.querySelector('.search-container').style.display = 'block'; // Show search only in teams view
+        // Show search bar parent logic
+        const searchInput = document.querySelector('.search-container');
+        if (searchInput) searchInput.style.visibility = 'visible';
+        if (searchInput) searchInput.style.opacity = '1';
+
     } else if (viewName === 'leaderboard') {
         document.getElementById('leaderboard-view').style.display = 'block';
         document.getElementById('btn-leaderboard').classList.add('active');
-        document.querySelector('.search-container').style.display = 'none'; // Hide search in leaderboard
-        updateLeaderboard(); // Ensure fresh data
+
+        // Hide search but keep layout or just hide? Hide.
+        const searchInput = document.querySelector('.search-container');
+        if (searchInput) searchInput.style.visibility = 'hidden';
+        if (searchInput) searchInput.style.opacity = '0';
+
+        updateLeaderboard();
     }
 }
 
 function filterTeams(searchTerm) {
     const term = searchTerm.toLowerCase();
     const sections = document.querySelectorAll('.team-section');
+    let hasResults = false;
 
     sections.forEach(section => {
-        const teamName = section.querySelector('.team-header h2').textContent.toLowerCase();
-        const becchinoName = section.querySelector('.becchino-info').textContent.toLowerCase();
+        // Search in Team Name
+        const teamH2 = section.querySelector('.team-header h2');
+        const teamName = teamH2 ? teamH2.textContent.toLowerCase() : "";
 
-        if (teamName.includes(term) || becchinoName.includes(term)) {
+        // Search in Becchino
+        const becchinoDiv = section.querySelector('.becchino-info');
+        const becchinoName = becchinoDiv ? becchinoDiv.textContent.toLowerCase() : "";
+
+        // Search in Players
+        const players = Array.from(section.querySelectorAll('.card .name')).map(el => el.textContent.toLowerCase());
+        const hasMatchingPlayer = players.some(p => p.includes(term));
+
+        if (teamName.includes(term) || becchinoName.includes(term) || hasMatchingPlayer) {
             section.style.display = 'block';
+            section.style.animation = 'fadeIn 0.3s ease'; // Re-trigger fade
+            hasResults = true;
         } else {
             section.style.display = 'none';
+            section.style.animation = 'none';
         }
     });
 }
+
 
 function updateLeaderboard() {
     const tbody = document.getElementById('leaderboard-body');
