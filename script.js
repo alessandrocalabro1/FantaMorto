@@ -81,10 +81,10 @@ const teams = [
             "Aldo Savoldello (Mago Silvan)",
             "Edoardo Vianello",
             "Ronnie Coleman",
-            "Valentina", // Generic name, might be tricky
+            "Valentino",
             "Carlo III (Charles III)",
             "Francesco Amadori",
-            "Luciano Maggi",
+            "Luciano Moggi",
             "Montel Williams",
             "Will.i.am"
         ]
