@@ -81,7 +81,7 @@ const teams = [
             "Aldo Savoldello (Mago Silvan)",
             "Edoardo Vianello",
             "Ronnie Coleman",
-            "Valentino",
+            "Valentino Garavani",
             "Carlo III (Charles III)",
             "Francesco Amadori",
             "Luciano Moggi",
